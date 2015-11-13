@@ -5,7 +5,7 @@ include_recipe 'deploy'
 node[:deploy].each do |application, deploy|
 
   if deploy[:application_type] != 'rails'
-    Chef::Log.debug("Skipping opsworks_delayed_job::deploy application #{application} as it is not an Rails app")
+    Chef::Log.debug("Skipping opsworks_delayed_job::deploy application #{application} as it is not a Rails app")
     next
   end
 
@@ -37,6 +37,8 @@ node[:deploy].each do |application, deploy|
     command node[:delayed_job][application][:restart_command]
   end
   
+  Chef::Log.debug("Updating cron tab...")
+      
   bash "update-crontab-#{application}" do
     deploy = node[:deploy][application]
     layers = node[:opsworks][:instance][:layers]
