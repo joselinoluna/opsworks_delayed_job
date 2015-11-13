@@ -40,11 +40,11 @@ node[:deploy].each do |application, deploy|
   Chef::Log.debug("Updating cron tab...")
       
   bash "update-crontab-#{application}" do
-    deploy = node[:deploy][application]
     layers = node[:opsworks][:instance][:layers]
 
     cwd "#{deploy[:deploy_to]}/current"
-    user 'deploy'
+    user deploy[:user]
+    group deploy[:group]
     code "bundle exec whenever --set environment=#{deploy[:rails_env]} --update-crontab #{application} --roles #{layers.join(',')}"
     only_if "cd #{deploy[:deploy_to]}/current && bundle show whenever"
   end
